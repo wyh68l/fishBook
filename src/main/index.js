@@ -45,7 +45,7 @@ function createWindow () {
 	  movable:true,//是否可拖动
     resizable: true, // 是否可调整大小
     alwaysOnTop: false,  // 是否永远在别的窗口上面
-    opacity: 0.02,
+    opacity: 0.04,
     webPreferences: {
       devTools: false,  // 是否启动控制台
       defaultFontSize: 13,  // 默认字体大小

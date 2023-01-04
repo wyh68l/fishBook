@@ -66,7 +66,7 @@ import { log } from 'util';
         this.mouseInView = value
         if(!value){
         	this.isShow = false
-	        mainWindow.setOpacity(0.02)
+	        mainWindow.setOpacity(0.04)
 	        document.body.style.background = '#000'
         }
       },

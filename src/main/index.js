@@ -57,6 +57,10 @@ function createWindow () {
     mainWindow = null
     app.quit()
   })
+
+	mainWindow.on('move-application',(event,pos) => {
+		mainWindow && mainWindow.setPosition(pos.posX,pos.posY)
+	})
 }
 
 app.on('ready', createWindow)

@@ -10,12 +10,14 @@ import { log } from 'util';
 -->
 <template>
   <div id="page" :class="{active: mouseInView && isShow}"  @dblclick="showText" @mouseover.prevent="mouseIn(true)" @mouseout.prevent="mouseIn(false)" @contextmenu.prevent="rightClick">
+    <div class="header"></div>
     <!-- 如果鼠标不再阅读器上则显示随便放一个网站域名 -->
-    <div class="preview">
+    <textarea class="preview" :value="(mouseInView && isShow) ? nowRead : ''" disabled>
       <!--{{ mouseInView ? nowRead : 'fanyi.baidu.com/translate?aldtype=16047&query=&keyfrom=baidu&smartresult=dict&lang=auto2zh#en/zh/single-reader' }}-->
-      {{(mouseInView && isShow) ? nowRead : ''}}
-      {{ book && nowRead.length < lineSize ? '（已读完）' : '' }}
-    </div>
+
+      <!--{{(mouseInView && isShow) ? nowRead : ''}}-->
+    </textarea>
+    <div> {{ book && nowRead.length < lineSize ? '（已读完）' : '' }}</div>
     <!-- {{ keyword }} -->
   </div>
 </template>
@@ -29,7 +31,7 @@ import { log } from 'util';
     data: () => {
       return {
         content: ``,
-        lineSize: 300, // 一行显示38个字
+        lineSize: 200, // 一行显示38个字
         mouseInView: false,
         menu: null,
         keyword: '',
@@ -135,11 +137,15 @@ import { log } from 'util';
       },
       prevPage() {
         this.$store.dispatch('prevPage')
+        const textarea = document.querySelector(".preview")
+        textarea.scroll({ top: 0, left: 0, behavior: "smooth" })
       },
       nextPage() {
         // 如果当前正在阅读的内容小于一行显示的文本数量，则说明是最后一行
         if (this.nowRead.length === this.lineSize) {
           this.$store.dispatch('nextPage')
+          const textarea = document.querySelector(".preview")
+          textarea.scroll({ top: 0, left: 0, behavior: "smooth" })
         }
       },
       // 初始化菜单
@@ -168,22 +174,37 @@ import { log } from 'util';
     display: flex;
     align-items: center;
     /*-webkit-app-region: drag;*/
-    -webkit-app-region: no-drag;
+    /*-webkit-app-region: no-drag;*/
   }
   .active{
-    color: #ddd;
+    color: #fff;
     /*background: rgba(0,0,0,.8);*/
   }
+  .header{
+    width: 100%;
+    height: 20px;
+    background:none;
+    position: absolute;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    -webkit-app-region: drag;
+  }
   .preview {
-    width: 90%;
-    /*height: 150%;*/
+    width: 100%;
+    height: 90%;
     margin: 20px auto;
+    margin-top: 0;
     padding: 20px;
     line-height: 23px;
     font-size: 13px;
+    background: none;
+    border: none;
+    color: #fff;
+    resize:none;
     /*background: rgba(0,0,0,.8);*/
     /*background-color: #fff;*/
-    -webkit-app-region: drag;
+    /*-webkit-app-region: drag;*/
     /*-webkit-app-region: no-drag;*/
 
   }

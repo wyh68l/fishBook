@@ -32,7 +32,7 @@ function createWindow () {
     height: 250,
     useContentSize: false,
     width: 500,
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     // x: 0,
     // y: height - 22,
     center:true,

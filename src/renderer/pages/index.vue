@@ -67,7 +67,7 @@ import { log } from 'util';
         if(!value){
         	this.isShow = false
 	        mainWindow.setOpacity(0.02)
-	        document.body.style.background = '#DEE1E6'
+	        document.body.style.background = '#000'
         }
       },
 
@@ -109,7 +109,7 @@ import { log } from 'util';
 	    showText(){
       	this.isShow = true
 		    mainWindow.setOpacity(.8)
-        document.body.style.background = '#333'
+        document.body.style.backgroundColor = '#333'
       },
       // 按键
       keyupEvent(e) {

@@ -64,7 +64,6 @@ const actions = {
   nextPage({ commit, state }) {
     let book = JSON.parse(JSON.stringify(state.book))
     let books = JSON.parse(JSON.stringify(state.books))
-
     if (!book) return
     book.page++
     const index = books.findIndex(val => val.title === book.title)

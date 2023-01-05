@@ -24,7 +24,7 @@
         <div class="book-item" :class="{active: book && book.title === item.title}" v-for="item in books" :key="item.title">
           <div class="item-th">{{ item.title }}</div>
           <div class="item-th">
-            <input class="input" type="text" :value="((200 * (item.page -1) / item.size) * 100).toFixed(2)" @change="(e)=>{return setSpeed(e,item)}"/>%
+            <input class="input" type="text" :value="((1000 * (item.page -1) / item.size) * 100).toFixed(2)" @change="(e)=>{return setSpeed(e,item)}"/>%
           </div>
           <div class="item-th">
             <button @click="selectBook(item)">{{ book && book.title === item.title ? '继续' : '开始' }}阅读</button>
@@ -132,7 +132,7 @@
         })
       },
 	    setSpeed(e,item){
-        let page = parseInt((((e.target.value) * item.size)/20000)+1)
+        let page = parseInt((((e.target.value) * item.size)/100000)+1)
 		    console.log(e.target.value,page)
         this.$store.dispatch('setPage',{page,title:item.title})
       },

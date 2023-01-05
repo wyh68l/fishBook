@@ -12,7 +12,7 @@ import { log } from 'util';
   <div id="page" :class="{active: mouseInView && isShow}"  @dblclick="showText" @mouseover.prevent="mouseIn(true)" @mouseout.prevent="mouseIn(false)" @contextmenu.prevent="rightClick">
     <div class="header"></div>
     <!-- 如果鼠标不再阅读器上则显示随便放一个网站域名 -->
-    <textarea class="preview" :value="(mouseInView && isShow) ? nowRead : ''" disabled>
+    <textarea class="preview" :class="(!isShow) && 'hide'" :value="nowRead" readonly @click="changePage">
       <!--{{ mouseInView ? nowRead : 'fanyi.baidu.com/translate?aldtype=16047&query=&keyfrom=baidu&smartresult=dict&lang=auto2zh#en/zh/single-reader' }}-->
 
       <!--{{(mouseInView && isShow) ? nowRead : ''}}-->
@@ -31,17 +31,19 @@ import { log } from 'util';
     data: () => {
       return {
         content: ``,
-        lineSize: 200, // 一行显示38个字
+        lineSize: 1000, // 一行显示38个字
         mouseInView: false,
         menu: null,
         keyword: '',
         isShow:false,
-        isLoading:false,
-        isLoading2:false
+        isLoading:true,
+        isLoading2:true,
+	      scrollHeight:0
       }
     },
     mounted() {
-
+	    const textarea = document.querySelector(".preview")
+	    textarea.addEventListener('scroll',this.Scrollbottom)
     },
     created() {
       // 监听键盘事件
@@ -72,37 +74,24 @@ import { log } from 'util';
       },
 
 // methods中
-	    Scrollbottom() {
-		    let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
-		    let clientHeight = document.documentElement.clientHeight;
-		    let scrollHeight = document.documentElement.scrollHeight;
-		    // console.log("",scrollTop)
+	    Scrollbottom(e) {
+		    let scrollTop = e.target.scrollTop;
+		    let clientHeight = e.target.clientHeight;
+		    let scrollHeight = e.target.scrollHeight;
 		    if (scrollTop + clientHeight >= scrollHeight) {
-		    	if(this.isLoading){
-		    		clearTimeout(this.isLoading)
-            this.isLoading = null
-		    	}
-		    	this.isLoading = setTimeout(()=>{
-				    console.log("滚动到底部了")
-				    // this.book.page+=1
-				    document.documentElement.scrollTop = 10;
-				    document.body.scrollTop = 10;
-				    this.$store.dispatch('nextPage')
-          },500)
-			    // this.pageNo++
-			    // console.log(this.pageNo);
-			    // this.fetchData()
-		    }
-		    if(scrollTop <= 0){
-			    if(this.isLoading2){
-			    	clearTimeout(this.isLoading2)
-				    this.isLoading2 = null
+			    if(this.isLoading && this.isShow){
+				    // console.log("滚动到底部了")
+				    this.isLoading = false
+				    // document.documentElement.scrollTop = 10;
+				    // document.body.scrollTop = 10;
 			    }
-			    this.isLoading2 = setTimeout(()=>{
-				    document.documentElement.scrollTop = 10;
-				    document.body.scrollTop = 10;
-				    this.$store.dispatch('prevPage')
-			    },500)
+		    }
+		    if(scrollTop <= 0 && this.isShow){
+			    if(this.isLoading2){
+				    this.isLoading2 = false
+            // console.log(222)
+				    this.scrollHeight = scrollHeight
+			    }
         }
 	    },
       //双击内容区域展示
@@ -138,15 +127,44 @@ import { log } from 'util';
       prevPage() {
         this.$store.dispatch('prevPage')
         const textarea = document.querySelector(".preview")
-        textarea.scroll({ top: 0, left: 0, behavior: "smooth" })
+        textarea.scroll({ top: 10, left: 0, behavior: "smooth" })
+	      setTimeout(()=>{
+		      this.isLoading2 = true
+	      },1000)
       },
       nextPage() {
         // 如果当前正在阅读的内容小于一行显示的文本数量，则说明是最后一行
         if (this.nowRead.length === this.lineSize) {
-          this.$store.dispatch('nextPage')
-          const textarea = document.querySelector(".preview")
-          textarea.scroll({ top: 0, left: 0, behavior: "smooth" })
+	        this.$store.dispatch('nextPage')
+	        const textarea = document.querySelector(".preview")
+	        textarea.scroll({ top: 10, left: 0, behavior: "smooth" })
+          setTimeout(()=>{
+	          this.isLoading = true
+          },1000)
         }
+      },
+      //滑动到顶部或底部的时候点击左键可翻页
+	    changePage() {
+		    if (this.nowRead.length === this.lineSize && !this.isLoading) {
+			    this.$store.dispatch('nextPage')
+			    const textarea = document.querySelector(".preview")
+			    textarea.scroll({ top: 10, left: 0, behavior: "smooth" })
+			    setTimeout(()=>{
+				    this.isLoading = true
+				    this.isLoading2 = true
+			    },1000)
+          return false
+		    }
+
+		    if (!this.isLoading2) {
+			    this.$store.dispatch('prevPage')
+			    const textarea = document.querySelector(".preview")
+			    textarea.scroll({ top: this.scrollHeight - 10, left: 0, behavior: "smooth" })
+			    setTimeout(()=>{
+				    this.isLoading = true
+				    this.isLoading2 = true
+			    },1000)
+		    }
       },
       // 初始化菜单
       initMenu() {
@@ -197,15 +215,19 @@ import { log } from 'util';
     margin-top: 0;
     padding: 20px;
     line-height: 23px;
-    font-size: 13px;
+    font-size: 14px;
     background: none;
     border: none;
     color: #fff;
     resize:none;
+    outline: none;
     /*background: rgba(0,0,0,.8);*/
     /*background-color: #fff;*/
     /*-webkit-app-region: drag;*/
     /*-webkit-app-region: no-drag;*/
 
+  }
+  .hide{
+    color: transparent;
   }
 </style>

@@ -78,7 +78,7 @@ import { log } from 'util';
 		    let scrollTop = e.target.scrollTop;
 		    let clientHeight = e.target.clientHeight;
 		    let scrollHeight = e.target.scrollHeight;
-		    if (scrollTop + clientHeight >= scrollHeight) {
+		    if (scrollTop + clientHeight + 1 >= scrollHeight) {
 			    if(this.isLoading && this.isShow){
 				    // console.log("滚动到底部了")
 				    this.isLoading = false
